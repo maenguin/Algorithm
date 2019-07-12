@@ -64,5 +64,41 @@ public class Q01 {
         return answer;
     }
 
+    //인덱스적으로 접근
+    //레이져를 만나면 스택에 남아있는 ( 개수만큼 1을 더해주고
+    //라인이 끝나면 +1을 해주었다
+    public int anotherSolution(String arrangement) {
+        int answer = 0;
+
+        Stack<Integer> stack = new Stack<>();
+
+        for (int i = 0; i < arrangement.length(); i++) {
+
+            if (arrangement.charAt(i) == ')') {
+
+
+                //바로 옆친구일 경우
+               if (stack.peek() + 1 == i) {
+                   stack.pop();
+                   System.out.println(stack.size());
+                   answer += stack.size();
+               }
+               else {
+                   answer += 1;
+                   stack.pop();
+               }
+            }
+            else {
+                stack.push(i);
+            }
+
+
+
+        }
+
+        return answer;
+    }
+
+
 
 }
