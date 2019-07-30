@@ -23,56 +23,73 @@ package programmers.hash;
 //        스파이는 하루에 최소 한 개의 의상은 입습니다.
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
-
+import java.util.*;
 
 
 public class Camouflage {
 
-//    private int factorial(int n) {
-//        int result = 1;
-//        for (int i = 2; i <= n; i++) {
-//            result *= i;
-//        }
-//        return result;
-//    }
-//
-//    private int combination(int n, int r) {
-//        return factorial(n)/(factorial(r)*factorial(n-r));
-//    }
 
+
+    ///머리를 한대 맞은 기분이다.
+    //이 문제를 풀려고 조합에 관련된 알고리즘을 재귀로도 비재귀로도 구현했지만
+    //테스트1이 계속 시간초과로 실패했다.
+    //그러나 단 하나의 영감이 코드의 길이와 복잡도를 말도안되게 줄여주었다...
+    //착용하지 않은 경우를 경우로 포함하는것...................
     public int solution(String[][] clothes) {
 
+        int answer = 1;
+        HashMap<String, Integer> hash = new HashMap<>();
+
+        for (int i = 0; i < clothes.length; i++) {
+            hash.put(clothes[i][1], hash.getOrDefault(clothes[i][1], 0) + 1);
+        }
+
+        for (String key :hash.keySet()) {
+            answer *= (hash.get(key) + 1);
+        }
+
+        return answer -1;
+    }
+
+
+
+    ////이 밑은 삽질한것들.....
+
+//    public int solution(String[][] clothes) {
+//
 //        int answer = 0;
+//        int[] hashIndex;
+//        int idx = 0;
 //        HashMap<String, Integer> hash = new HashMap<>();
 //
 //        for (int i = 0; i < clothes.length; i++) {
 //            hash.put(clothes[i][1], hash.getOrDefault(clothes[i][1],0) + 1);
 //        }
 //
-//        answer = 1;
-//        for (String key: hash.keySet()) {
-//            answer *= hash.get(key);
-//            System.out.println(hash.get(key));
+//        hashIndex = new int[hash.size()];
+//
+//        for (String key:hash.keySet()) {
+//            hashIndex[idx] = hash.get(key);
+//            idx++;
+//
 //        }
 //
-//        for (int i = 1; i < hash.size() ; i++) {
-//            int g = combination(hash.size()-1,i-1);
-//            for (String key: hash.keySet()) {
-//                answer += hash.get(key)*g;
+//        for (int i = 0; i < hash.size(); i++) {
 //
+//            List<int[]> combination = combination(hash.size(),i + 1);
+//            for (int j = 0; j < combination.size(); j++) {
+//                int mul = 1;
+//                for (int k = 0; k < combination.get(j).length; k++) {
+//
+//                    mul *= hashIndex[combination.get(j)[k]];
+//                }
+//
+//                answer += mul;
 //            }
 //        }
 //
-
-
-
-
-        return 1;
-    }
+//        return answer;
+//    }
 
 
     //nCr은 n-1Cr + n-1Cr-1 인걸 이용했다.
@@ -80,43 +97,63 @@ public class Camouflage {
     //(0,x) 0을 뽑는걸 가정하고 나머지 3개중에 하나를 뽑는 경우와
     //(x,x) 0을 제외한 나머지 3개중에 두개를 뽑는 경우의 합이라고 할 수 있다.
 
-    public static void combination(int n, int r, int index, ArrayList<Integer> arr, boolean flag) {
+    public static List<int[]> combination(int n, int r) {
 
-        ArrayList<Integer> arr2 = new ArrayList<>(arr);
-        if (flag) {
-            arr2.remove(index);
+        int[] arr = new int[r];
+        List<int[]> arrList = new ArrayList<>();
+        com_non_rcursive(arr,0,n,r,0,arrList);
+        return arrList;
+    }
+    public static void com_non_rcursive(int[] arr, int index, int n, int r, int target,List<int[]> arrList) {
+        Stack<Integer[]> stack = new Stack<>();
+        stack.push(new Integer[]{index,n,r,target});
+        while (!stack.isEmpty()) {
+            Integer[] arr2 = stack.pop();
+            int index2 = arr2[0];
+            int n2 = arr2[1];
+            int r2 = arr2[2];
+            int target2 = arr2[3];
+
+            if (r2 == 0) arrList.add(Arrays.copyOf(arr,arr.length));
+            else if (target2 ==n2)
+                continue;
+            else { arr[index2] = target2;
+                stack.push(new Integer[]{index2,n2,r2,target2+1});
+                stack.push(new Integer[]{index2+1,n2,r2-1,target2+1});
+            }
+
         }
 
-        if (n == r || r==0) {
-            System.out.print("[");
-            for (int i = 0; i < arr2.size(); i++) {
-                System.out.print(arr2.get(i));
-            }
-            System.out.println("]" + n + " " + r);
+    }
 
+
+    public static void combination(int n, int r, int index, int target,int[] arr,List<int[]> arrList) {
+        if (r==0) {
+            arrList.add(Arrays.copyOf(arr,arr.length));
             return ;
         }
-        combination(n-1,r-1,index +1, arr2 , false);
-        combination(n-1,r,index, arr2, true);
+
+        arr[index] = target;
+        if (n == r) {
+            arrList.add(Arrays.copyOf(arr,arr.length));
+            return ;
+        }
+        combination(n-1,r-1,index +1 ,target + 1, arr,arrList);
+        combination(n-1,r,index,target + 1, arr,arrList);
     }
 
-    public void solution2(int n) {
-
-        for (int i = 0; i < n; i++) {
-            System.out.println("[");
-            System.out.println(i);
-            System.out.println("]");
+    public static void combination2(int[] arr, int index, int n, int r, int target,List<int[]> arrList) {
+        if (r == 0) {
+            arrList.add(Arrays.copyOf(arr,arr.length));
+            return;
         }
-
-        for (int i = 0; i < n; i++) {
-            System.out.println("[");
-            for (int j = i+1; j < n ; j++) {
-                System.out.println(i);
-                System.out.println(" ");
-            }
-            System.out.println("]");
+        else if (target == n)
+            return;
+        else { arr[index] = target;
+            combination2(arr, index + 1, n, r - 1, target + 1,arrList);
+            combination2(arr, index, n, r, target + 1,arrList);
         }
-
     }
+
 
 }
