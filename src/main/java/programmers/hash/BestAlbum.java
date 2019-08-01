@@ -1,6 +1,9 @@
 package programmers.hash;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 
 //베스트앨범
@@ -85,4 +88,57 @@ public class BestAlbum {
         }
         return keyList;
     }
+
+
+
+
+    ///다른분 풀이 분석 stream 이용
+
+    //Music객체를 정렬하기 위해 Comparable 인터페이스를 상속받고 compareTo함수를 오버라이딩 했다.
+    public class Music implements Comparable<Music>{
+
+        private int played;
+        private int id;
+        private String genre;
+
+        public Music(String genre, int played, int id) {
+            this.genre = genre;
+            this.played = played;
+            this.id = id;
+        }
+
+        //플레이횟수를 내림차순으로 횟수가 같으면 id를 오름차순으로 정렬하도록 설정
+        @Override
+        public int compareTo(Music other) {
+            if(this.played == other.played) return this.id - other.id;
+            return other.played - this.played;
+        }
+
+        public String getGenre() {return genre;}
+    }
+
+    public int[] solution2(String[] genres, int[] plays) {
+
+
+
+        return IntStream.range(0, genres.length)//genres수만큼 IntStream size설정해 생성 [0,1,2,3~~]
+                .mapToObj(i -> new Music(genres[i], plays[i], i)) //IntStream값을 이용해 Music Stream생성
+                .collect(Collectors.groupingBy(Music::getGenre)) //장르를 기준으로 그룹바이 Map<String, List<Music>>
+                .entrySet().stream()//엔트리셋으로 변환후 스트림으로 Set<Map.Entry<String, List<Music>>>
+                .sorted((a, b) -> sum(b.getValue()) - sum(a.getValue()))//장르 총플레이 횟수를 기준으로 오름차순으로 정렬
+                .flatMap(x->x.getValue().stream().sorted().limit(2))//후 총 플레이 횟수 높은 장르의 음악들을 꺼내서 스트림생성, 오름차순 정렬후 그중에 최대 2개만 빼내서 플래팅
+                .mapToInt(x->x.id).toArray(); //후 id만 추출 하고 arr로 변환
+    }
+
+    //뮤직 객체리스트에서 플레이횟수의 총합을 반환
+    private int sum(List<Music> value) {
+        int answer = 0;
+        for (Music music : value) {
+            answer+=music.played;
+        }
+        return answer;
+    }
+
+
+
 }
