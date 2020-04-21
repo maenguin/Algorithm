@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 public class TheBiggestNumber  {
 
     public String solution(int[] numbers) {
-        return Arrays.stream(numbers)
+
+        String answer = Arrays.stream(numbers)
                 .mapToObj(Integer::toString)
                 .sorted(new Comparator<String>() {
                     @Override
@@ -30,16 +31,33 @@ public class TheBiggestNumber  {
                         return myCompare(o1,o2,0);
                     }
                 })
+                .peek(System.out::println)
                 .collect(Collectors.joining());
+
+
+        return answer;
     }
 
     private int myCompare(String s1, String s2, int i) {
 
-        System.out.println("compare 실행");
-        char c1 = s1.length() > i ? s1.charAt(i) : s1.charAt(s1.length()-1);
-        char c2 = s2.length() > i ? s2.charAt(i) : s2.charAt(s2.length()-1);
+        if (s1.equals(s2)) {return -1;}
+        else if (s2.startsWith(s1)){
+            String s = s2.substring(s1.length());
+            return myCompare(s1,s,0);
+        }
+        else if (s1.startsWith(s2)) {
+            String s = s1.substring(s2.length());
+            return myCompare(s,s2,0);
+        }
+        else {
+            char c1 = s1.length() > i ? s1.charAt(i) : s1.charAt(0);
+            char c2 = s2.length() > i ? s2.charAt(i) : s2.charAt(0);
 
-        return c1 == c2 ? myCompare(s1,s2,i+1) : c2 - c1 ;
+            return c1 == c2 && i < s1.length() && i < s2.length() ? myCompare(s1,s2,i+1) : c2 - c1 ;
+        }
+
+        //i번째 char요소가 있으면 가져오고 없으면 마지막 요소를 반환
+
     }
 
 }
