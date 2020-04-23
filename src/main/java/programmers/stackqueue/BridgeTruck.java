@@ -32,42 +32,39 @@ public class BridgeTruck {
     public class Truck{
 
         private int weight;
-        private int index;
+        private int bridgeEntryTime;
 
-        public Truck(int weight, int index) {
+        public Truck(int weight, int bridgeEntryTime) {
             this.weight = weight;
-            this.index = index;
+            this.bridgeEntryTime = bridgeEntryTime;
         }
     }
 
 
     public class Bridge{
         private Queue<Truck> queue;
-        private int weight;
-        private int bridgeLength;
-        private int currentWeights;
-
+        private int limitWeight;
+        private int Length;
+        private int totalWeight;
 
         public Bridge(int weight, int bridgeLength) {
-            this.weight = weight;
-            this.bridgeLength = bridgeLength;
+            this.limitWeight = weight;
+            this.Length = bridgeLength;
             queue = new LinkedList<Truck>();
         }
 
-
-
         public boolean offer(Truck truck){
-            if (currentWeights + truck.weight > weight){
+            if (totalWeight + truck.weight > limitWeight){
                 return false;
             }
             queue.offer(truck);
-            currentWeights += truck.weight;
+            totalWeight += truck.weight;
             return true;
         }
 
         public Truck poll(){
             final Truck truck = queue.poll();
-            currentWeights -= truck.weight;
+            totalWeight -= truck.weight;
             return truck;
         }
         public Truck peek(){
@@ -81,19 +78,30 @@ public class BridgeTruck {
 
     public int solution2(int bridge_length, int weight, int[] truck_weights) {
         int answer = 0;
+        int time = 0;
+        int truckIndex = 0;
         Bridge bridge = new Bridge(weight,bridge_length);
 
-
         do {
-            bridge.offer(new Truck(truck_weights[answer],answer));
-            Truck truck = bridge.peek();
-            if (truck.index + bridge_length == answer){
-                bridge.poll();
+
+            if (!bridge.isEmpty()){
+                Truck headTruck = bridge.peek();
+                if (headTruck.bridgeEntryTime + bridge_length == time){
+                    bridge.poll();
+                }
             }
 
+            if (truckIndex < truck_weights.length){
+                Truck nextTruck = new Truck(truck_weights[truckIndex],time);
+                if (bridge.offer(nextTruck)){
+                    truckIndex++;
+                }
+            }
+            time++;
 
-            answer++;
         }while (!bridge.isEmpty());
+
+        answer = time;
 
         return answer;
     }
