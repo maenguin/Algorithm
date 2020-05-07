@@ -19,12 +19,54 @@ package programmers.dfsbfs;
 //        numbers	target	return
 //        [1, 1, 1, 1, 1]	3	5
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
+
 public class TargetNumber {
 
+
+
+    ///dfs로 해결
     public int solution(int[] numbers, int target) {
         int answer = 0;
+        int sum = 0;
+
+        Stack<int[]> stack = new Stack<>();
+        stack.push(new int[]{0,numbers[0]});
+        stack.push(new int[]{0,-numbers[0]});
+
+
+        boolean flag = false;
+
+        int popIndex = -1;
+        while (!stack.empty()) {
+            final int[] pop = stack.pop();
+            popIndex = pop[0];
+            numbers[popIndex] = pop[1];
+
+            //두번 더하면 교체가 되는식
+            sum = flag? sum + (2*pop[1]) : sum + pop[1];
+
+            System.out.println("pop : "+pop[1]+ " popIndex : "+pop[0]);
+
+            if (popIndex + 1 != numbers.length) {
+                stack.push(new int[]{popIndex+1,numbers[popIndex+1]});
+                stack.push(new int[]{popIndex+1,-numbers[popIndex+1]});
+            }
+            else {
+                flag = true;
+                System.out.println(Arrays.toString(numbers));
+                if (sum == target){
+                    answer++;
+                }
+            }
+        }
+
+        System.out.println(answer);
         return answer;
     }
-
 
 }
