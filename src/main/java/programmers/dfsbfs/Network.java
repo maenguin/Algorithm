@@ -17,12 +17,60 @@ package programmers.dfsbfs;
 //        3	[[1, 1, 0], [1, 1, 1], [0, 1, 1]]	1
 
 
+import java.util.Stack;
+
 public class Network {
 
-    class Solution {
-        public int solution(int n, int[][] computers) {
-            int answer = 0;
-            return answer;
+    private boolean endFlag(int n, int[][] computers){
+        for (int i = 0; i < n; i++) {
+            if (computers[i][i] != 2){
+                return true;
+            }
         }
+        return false;
     }
+
+    private void setVisited(int[][] computers, int computer){
+        computers[computer][computer] = 2;
+    }
+    private boolean isVisited(int[][] computers, int computer){
+        return computers[computer][computer] == 2;
+    }
+    private boolean isLinked(int[][] computers, int computer1, int computer2){
+        return computers[computer1][computer2] == 1;
+    }
+
+    public int solution(int n, int[][] computers) {
+        int answer = 0;
+
+
+        Stack<Integer> stack = new Stack<>();
+        stack.push(0);
+
+        while (endFlag(n,computers)){
+
+            while (!stack.empty()){
+
+                final Integer pop = stack.pop();
+                setVisited(computers,pop);
+
+                for (int i = 0; i < n; i++) {
+                    if (isLinked(computers,pop,i) && !isVisited(computers,i)){
+                        stack.push(i);
+                        System.out.println("push : "+i);
+                    }
+                }
+            }
+            answer++;
+            for (int j = 0; j < n; j++) {
+                if (!isVisited(computers,j)){
+                    stack.push(j);
+                    break;
+                }
+            }
+        }
+        System.out.println("answer : "+answer);
+        return answer;
+    }
+
 }
