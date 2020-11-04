@@ -28,10 +28,51 @@ package programmers.heap;
 //        모든 음식의 스코빌 지수가 7 이상이 되었고 이때 섞은 횟수는 2회입니다.
 
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class Spicier {
+
 
     public int solution(int[] scoville, int K) {
         int answer = 0;
-        return answer;
+
+        PriorityQueue<Integer> scvQueue = new PriorityQueue();
+
+        for (int scv : scoville)
+            scvQueue.offer(scv);
+
+        int min1 = 0;
+        int min2 = 0;
+        boolean success = false;
+        //모든 음식의 스코빌 지수를 K 이상으로 만들 수 없는 경우에는 -1을 return 합니다.
+        while ((scvQueue.peek() < K) && ( success = scvQueue.size() > 1) ){
+            min1 = scvQueue.poll();
+            min2 = scvQueue.poll();
+
+            int mixResult = mix(min1,min2);
+            scvQueue.offer(mixResult);
+            answer++;
+
+        }
+
+
+        return success? answer : -1;
     }
+
+    private int mix(int scovile1, int scovile2){
+        return scovile1 >= scovile2 ? scovile2 + scovile1*2 : scovile1 + scovile2*2;
+    }
+
+
+
+    //후기
+    //힙을 통해서 구현하니 쉽게 풀린것 같다
+
+
+
+
+
+
 }
