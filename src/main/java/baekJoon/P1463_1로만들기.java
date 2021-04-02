@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 //https://www.acmicpc.net/problem/1463
-public class 일로만들기 {
+public class P1463_1로만들기 {
 
     /*
     정수 X에 사용할 수 있는 연산은 다음과 같이 세 가지 이다.

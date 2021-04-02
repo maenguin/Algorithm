@@ -4,7 +4,7 @@ package baekJoon;
 import java.util.Scanner;
 
 //https://www.acmicpc.net/problem/17427
-public class 약수의합2 {
+public class P17427_약수의합2 {
 
     /*
     두 자연수 A와 B가 있을 때, A = BC를 만족하는 자연수 C를 A의 약수라고 한다.

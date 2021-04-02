@@ -3,7 +3,7 @@ package baekJoon;
 import java.util.Scanner;
 
 //https://www.acmicpc.net/problem/10430
-public class 나머지 {
+public class P10430_나머지 {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

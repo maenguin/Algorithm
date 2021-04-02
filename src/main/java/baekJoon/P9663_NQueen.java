@@ -6,7 +6,7 @@ import java.util.Scanner;
 import java.util.Stack;
 
 //https://www.acmicpc.net/problem/9663
-public class NQueen {
+public class P9663_NQueen {
 
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
