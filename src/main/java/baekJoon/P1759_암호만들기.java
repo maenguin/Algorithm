@@ -43,7 +43,7 @@ public class P1759_암호만들기 {
             a[i] = sc.next().charAt(0);
         }
         Arrays.sort(a);
-        go(C,L,0,0, a);
+        select(0,0,C,L,a);
     }
 
     //순서의 관점으로 풀었을 경우
@@ -63,6 +63,23 @@ public class P1759_암호만들기 {
             go(n, r, depth + 1, i+1, a);
             visited[i] = false;
         }
+    }
+
+    //선택의 관점으로 풀었을 경우
+    public static void select(int next, int selectCnt, int n, int r, char[] a) {
+        if (selectCnt == r) {
+            if (isValidate()){
+                System.out.println(output);
+            }
+            return;
+        }
+        if (next >= n) {
+            return;
+        }
+        output[selectCnt] = a[next];
+        select(next + 1, selectCnt + 1, n, r, a);
+        select(next + 1, selectCnt, n, r, a);
+
     }
 
     public static boolean isValidate() {
