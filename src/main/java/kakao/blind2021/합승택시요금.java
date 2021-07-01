@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 
 public class 합승택시요금 {
 
+    //dijkstra 사용 O((E+V)logV)
     public int solution(int n, int s, int a, int b, int[][] fares) {
         int answer = Integer.MAX_VALUE;
 
@@ -81,5 +82,53 @@ public class 합승택시요금 {
             this.weight = weight;
         }
     }
+
+
+
+    //floyd 사용 O(N^3) N제한이 200이라 사용가능
+    public int solution2(int n, int s, int a, int b, int[][] fares) {
+
+        int MAX_VALUE = 1 << 24;
+        int answer = MAX_VALUE;
+
+        int[][] d = new int[n + 1][n + 1];
+        //Integer.MAX_VALUE로 초기화 하면 floyd 사용시 오버플로우가 발생해서 음수 값이 저장될 수 도 있다.
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (i != j) {
+                    d[i][j] = MAX_VALUE;
+                }
+            }
+        }
+
+        for (int i = 0; i < fares.length; i++) {
+            int from = fares[i][0];
+            int to = fares[i][1];
+            int weight = fares[i][2];
+            d[from][to] = weight;
+            d[to][from] = weight;
+        }
+
+        floyd(d);
+
+        for (int i = 1; i <= n; i++) {
+            answer = Math.min(answer, d[s][i] + d[i][a] + d[i][b]);
+        }
+
+        return answer;
+    }
+
+    private void floyd(int[][] d) {
+        for (int k = 1; k < d.length; k++) {
+            for (int i = 1; i < d.length; i++) {
+                for (int j = 1; j < d.length; j++) {
+                    if (d[i][j] > d[i][k] + d[k][j]) {
+                        d[i][j] = d[i][k] + d[k][j];
+                    }
+                }
+            }
+        }
+    }
+
 
 }
