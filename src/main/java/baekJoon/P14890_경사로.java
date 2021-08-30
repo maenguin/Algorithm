@@ -19,92 +19,74 @@ public class P14890_경사로 {
             }
         }
 
+        int answer = 0;
         //가로 검사
         for (int i = 0; i < n; i++) {
-            int preNum = 0;
-            int conCnt = 0;
-            for (int j = 0; j < n; j++) {
-                int curNum = map[i][j];
-
-                if (preNum == curNum) {
-                    conCnt++;
-
-                } else {
-
-                    //높이차가 2 이상이면 안됨
-                    if (Math.abs(curNum - preNum) > 1) {
-                        break;
-                    }
-                    if (curNum > preNum && conCnt < l) {
-                        break;
-                    }
-                    if (curNum < preNum) {
-                        if (j + l >= n) {
-                            break;
-                        }
-
-                        boolean result = hasConsecutiveNum(map[i], curNum, j, j + l);
-                        if (result) {
-                            j += l - 1;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    conCnt = 1;
-                }
-                preNum = curNum;
+            if (check(map[i], l)) {
+                answer++;
             }
         }
 
         //세로 검사
         for (int j = 0; j < n; j++) {
-            int preNum = 0;
-            int conCnt = 0;
+            int[] road = new int[n];
             for (int i = 0; i < n; i++) {
-                int curNum = map[i][j];
-
-                if (preNum == curNum) {
-                    conCnt++;
-
-                } else {
-
-                    //높이차가 2 이상이면 안됨
-                    if (Math.abs(curNum - preNum) > 1) {
-                        break;
-                    }
-                    if (curNum > preNum && conCnt < l) {
-                        break;
-                    }
-                    if (curNum < preNum) {
-                        if (i + l >= n) {
-                            break;
-                        }
-
-                        boolean result = hasConsecutiveNum(map[i], curNum, i, i + l);
-                        if (result) {
-                            i += l - 1;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    conCnt = 1;
-                }
-                preNum = curNum;
+                road[i] = map[i][j];
+            }
+            if (check(road, l)) {
+                answer++;
             }
         }
+
+        System.out.println(answer);
+
     }
 
-    public static boolean hasConsecutiveNum(int[] a, int num, int start, int end) {
-        for (int i = start; i < end; i++) {
-            if (a[i] != num) {
-                return false;
+    public static boolean check(int[] road, int l) {
+        boolean[] slope = new boolean[road.length];
+        for (int i = 0; i < road.length - 1; i++) {
+            int cur = road[i];
+            int next = road[i + 1];
+
+            //높이차가 있는 경우
+            if (cur != next) {
+
+                //낮은 칸과 높은 칸의 높이 차이가 1이 아닌 경우
+                if (Math.abs(cur - next) != 1) return false;
+
+                //다음 길 따라 경사로를 놔야되는 경우
+                if (cur > next) {
+                    //경사로를 놓다가 범위를 벗어나는 경우
+                    if (i + l + 1 > road.length) return false;
+
+                    for (int k = 0; k < l; k++) {
+                        //낮은 지점의 칸의 높이가 모두 같지 않거나, L개가 연속되지 않은 경우
+                        if (road[i + k + 1] != next) return false;
+                        //경사로를 놓은 곳에 또 경사로를 놓는 경우
+                        if (slope[i + k + 1]) return false;
+                        slope[i + k + 1] = true;
+                    }
+                }
+                //이전 길 따라 경사로를 놔야되는 경우
+                else {
+                    //경사로를 놓다가 범위를 벗어나는 경우
+                    if (i - l + 1 < 0) return false;
+
+                    for (int k = 0; k < l; k++) {
+                        //낮은 지점의 칸의 높이가 모두 같지 않거나, L개가 연속되지 않은 경우
+                        if (road[i - k] != cur) return false;
+                        //경사로를 놓은 곳에 또 경사로를 놓는 경우
+                        if (slope[i - k]) return false;
+                        slope[i - k] = true;
+                    }
+
+                }
+
+
             }
         }
         return true;
     }
-
 
 
 }
