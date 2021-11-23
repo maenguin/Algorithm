@@ -1,5 +1,6 @@
 package baekJoon;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 //문제 출처 : https://www.acmicpc.net/problem/20437
@@ -11,7 +12,7 @@ public class P20437_문자열게임2 {
         Scanner scanner = new Scanner(System.in);
         int T = scanner.nextInt();
         while (T-- > 0) {
-            solution(scanner.next(), scanner.nextInt());
+            solution2(scanner.next(), scanner.nextInt());
         }
     }
 
@@ -40,6 +41,25 @@ public class P20437_문자열게임2 {
             }
         }
 
+        System.out.println(firstGame == Integer.MAX_VALUE ? -1 : firstGame + " " + secondGame);
+    }
+
+    private static void solution2(String w, int k) {
+        int firstGame = Integer.MAX_VALUE;
+        int secondGame = -1;
+        ArrayList<Integer>[] charPositions = new ArrayList[26];
+        for (int i = 0; i < charPositions.length; i++)
+            charPositions[i] = new ArrayList<>();
+        for (int i = 0; i < w.length(); i++)
+            charPositions[w.charAt(i) - 'a'].add(i);
+        for (int i = 0; i < charPositions.length; i++) {
+            if (charPositions[i].size() < k) continue;
+            for (int j = 0; j + k - 1 < charPositions[i].size(); j++) {
+                int diff = charPositions[i].get(j + k - 1) - charPositions[i].get(j) + 1;
+                firstGame = Math.min(firstGame, diff);
+                secondGame = Math.max(secondGame, diff);
+            }
+        }
         System.out.println(firstGame == Integer.MAX_VALUE ? -1 : firstGame + " " + secondGame);
     }
 }
