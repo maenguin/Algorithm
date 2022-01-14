@@ -12,8 +12,8 @@ public class 신고결과받기 {
     public int[] solution(String[] id_list, String[] report, int k) {
         int[] answer = new int[id_list.length];
         Map<String, User> userMap = new HashMap<>();
-        for (String id : id_list) {
-            userMap.put(id, new User(id));
+        for (int i = 0; i < id_list.length; i++) {
+            userMap.put(id_list[i], new User(i));
         }
         for (String s : report) {
             String[] split = s.split(" ");
@@ -22,23 +22,19 @@ public class 신고결과받기 {
         for (User user : userMap.values()) {
             if (user.reportMeUserSet.size() >= k) {
                 for (String reportMeUser : user.reportMeUserSet) {
-                    userMap.get(reportMeUser).receivedEmailCount++;
+                    answer[userMap.get(reportMeUser).index]++;
                 }
             }
-        }
-        for (int i = 0; i < id_list.length; i++) {
-            answer[i] = userMap.get(id_list[i]).receivedEmailCount;
         }
         return answer;
     }
 
     private static class User {
-        String name;
-        int receivedEmailCount;
+        int index;
         Set<String> reportMeUserSet;
 
-        public User(String name) {
-            this.name = name;
+        public User(int index) {
+            this.index = index;
             reportMeUserSet = new HashSet<>();
         }
     }
