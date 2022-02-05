@@ -10,33 +10,37 @@ public class P11062_카드게임 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int t = scanner.nextInt();
+        StringBuilder sb = new StringBuilder();
         while (t-- > 0) {
             int n = scanner.nextInt();
             int[] cards = new int[n];
+            int[][] dp = new int[n][n];
             for (int i = 0; i < n; i++) {
                 cards[i] = scanner.nextInt();
             }
-            int result = doA(cards, 0, n - 1, 0);
-            System.out.println(result);
+            sb.append(doA(cards, dp, 0, n - 1)).append("\n");
         }
+        System.out.println(sb);
     }
 
-    private static int doA(int[] cards, int left, int right, int score) {
+    private static int doA(int[] cards, int[][] dp, int left, int right) {
         if (left > right) {
-            return score;
+            return 0;
         }
-        int leftResult = doB(cards, left + 1, right, score + cards[left]);
-        int rightResult = doB(cards, left, right - 1, score + cards[right]);
-        return Math.max(leftResult, rightResult);
+        if (dp[left][right] != 0) return dp[left][right];
+        int leftResult = cards[left] + doB(cards, dp, left + 1, right);
+        int rightResult = cards[right] + doB(cards, dp, left, right - 1);
+        return dp[left][right] = Math.max(leftResult, rightResult);
     }
 
-    private static int doB(int[] cards, int left, int right, int score) {
+    private static int doB(int[] cards, int[][] dp, int left, int right) {
         if (left > right) {
-            return score;
+            return 0;
         }
-        int leftResult = doA(cards, left + 1, right, score);
-        int rightResult = doA(cards, left, right - 1, score);
-        return Math.min(leftResult, rightResult);
+        if (dp[left][right] != 0) return dp[left][right];
+        int leftResult = doA(cards, dp, left + 1, right);
+        int rightResult = doA(cards, dp, left, right - 1);
+        return dp[left][right] = Math.min(leftResult, rightResult);
     }
 
 }
