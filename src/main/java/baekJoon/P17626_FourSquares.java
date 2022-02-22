@@ -3,7 +3,7 @@ package baekJoon;
 import java.util.Scanner;
 
 //문제 출처 : https://www.acmicpc.net/problem/17626
-//노션 링크 : https://delirious-sock-4dc.notion.site/RGB-1-15d906fcb172459291ecd7cd0785b1e4
+//노션 링크 : https://delirious-sock-4dc.notion.site/17626-FourSquares-df3c97281c6a43c9a6a00e89e27de4d8
 //문제 유형 : DP
 public class P17626_FourSquares {
 
